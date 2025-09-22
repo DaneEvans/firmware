@@ -31,7 +31,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync upstream master:
+  syncUpstream_master:
     runs-on: ubuntu-latest
     steps:
       - name: GitHub Sync to Upstream Repository
@@ -46,7 +46,7 @@ jobs:
           push_args: ${{ env.PUSH_ARGS }}
           spawn_logs: ${{ env.SPAWN_LOGS }}
 
-  sync upstream develop:
+  syncUpstream_develop:
     runs-on: ubuntu-latest
     steps:
       - name: GitHub Sync to Upstream Repository
