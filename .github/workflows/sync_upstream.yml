@@ -11,7 +11,7 @@ env:
   # Optional, defaults to main
   UPSTREAM_BRANCH: "master"
   # Optional, defaults to UPSTREAM_BRANCH
-  DOWNSTREAM_BRANCH: "master"
+  DOWNSTREAM_BRANCH: "upstream_master"
   # Optional fetch arguments
   FETCH_ARGS: ""
   # Optional merge arguments
@@ -24,7 +24,7 @@ env:
 # This runs every day on 1801 UTC
 on:
   schedule:
-    - cron: "01 18 * * *"
+    - cron: "01 3/4 * * *"
   push:
     branches:
       - "main"
@@ -56,7 +56,7 @@ jobs:
         with:
           upstream_repo: ${{ env.UPSTREAM_URL }}
           upstream_branch: "develop"
-          downstream_branch: "develop"
+          downstream_branch: "upstream_develop"
           token: ${{ env.WORKFLOW_TOKEN }}
           fetch_args: ${{ env.FETCH_ARGS }}
           merge_args: ${{ env.MERGE_ARGS }}
@@ -70,7 +70,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          ref: "master"
+          ref: "upstream_master"
           fetch-depth: 0
 
       - name: Set up Git user
@@ -85,7 +85,7 @@ jobs:
         run: git remote -v
 
       - name: Cherry-pick commit
-        run: git cherry-pick 8171aa4445be96b7051cd71c43afbe967eb89e0e
+        run: git merge flamingo_patch
 
       - name: Force push temp branch to flamingo_updated
         env:
@@ -100,7 +100,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          ref: "develop"
+          ref: "upstream_develop"
           fetch-depth: 0
 
       - name: Set up Git user
@@ -115,7 +115,7 @@ jobs:
         run: git remote -v
 
       - name: Cherry-pick commit
-        run: git cherry-pick 8171aa4445be96b7051cd71c43afbe967eb89e0e
+        run: git merge flamingo_patch
 
       - name: Force push temp branch to flamingo_updated_dev
         env:
