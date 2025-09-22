@@ -63,6 +63,7 @@ jobs:
 
   apply_flamingo_patch_master:
     runs-on: ubuntu-latest
+    needs: syncUpstream_master
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -92,6 +93,7 @@ jobs:
 
   apply_flamingo_patch_dev:
     runs-on: ubuntu-latest
+    needs: syncUpstream_develop
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
