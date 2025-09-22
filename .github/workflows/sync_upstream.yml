@@ -3,7 +3,7 @@ name: Sync Upstream
 env:
   # Required, URL to upstream (fork base)
   UPSTREAM_URL: "https://github.com/meshtastic/firmware.git"
-  # Required, token to authenticate bot, could use ${{ secrets.GITHUB_TOKEN }} 
+  # Required, token to authenticate bot, could use ${{ secrets.GITHUB_TOKEN }}
   # Over here, we use a PAT instead to authenticate workflow file changes.
   WORKFLOW_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   # Optional, defaults to main
@@ -16,14 +16,14 @@ env:
   MERGE_ARGS: ""
   # Optional push arguments
   PUSH_ARGS: ""
-  # Optional toggle to spawn time logs (keeps action active) 
+  # Optional toggle to spawn time logs (keeps action active)
   SPAWN_LOGS: "false" # "true" or "false"
 
 # This runs every day on 1801 UTC
 on:
   schedule:
-    - cron: '01 18 * * *'
-  push: 
+    - cron: "01 18 * * *"
+  push:
     branches:
       - "main"
 
@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: GitHub Sync to Upstream Repository
         uses: dabreadman/sync-upstream-repo@v1.3.0
-        with: 
+        with:
           upstream_repo: ${{ env.UPSTREAM_URL }}
           upstream_branch: ${{ env.UPSTREAM_BRANCH }}
           downstream_branch: ${{ env.DOWNSTREAM_BRANCH }}
@@ -46,38 +46,34 @@ jobs:
           push_args: ${{ env.PUSH_ARGS }}
           spawn_logs: ${{ env.SPAWN_LOGS }}
 
-
   apply_patch:
     runs-on: ubuntu-latest
-    steps: 
-    - name: Checkout repository
-      uses: actions/checkout@v5
-      with:     
-        ref: 'master'
-        fetch-depth: 0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          ref: "master"
+          fetch-depth: 0
 
+      - name: Set up Git user
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Create temp branch
+        run: git checkout -b temp
 
-    - name: Set up Git user
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: debug
+        run: git remote -v
 
-    - name: Create temp branch
-      run: git checkout -b temp
-    
-    - name: debug 
-      run: git remote -v 
-    
-    # - name: fetch patch
-    #   run: git fetch 8171aa4445be96b7051cd71c43afbe967eb89e0e
+      # - name: fetch patch
+      #   run: git fetch 8171aa4445be96b7051cd71c43afbe967eb89e0e
 
+      - name: Cherry-pick commit
+        run: git cherry-pick 8171aa4445be96b7051cd71c43afbe967eb89e0e
 
-    - name: Cherry-pick commit
-      run: git cherry-pick 8171aa4445be96b7051cd71c43afbe967eb89e0e
-
-    - name: Force push temp branch to flamingo_updated
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git push --force origin temp:flamingo_updated
+      - name: Force push temp branch to flamingo_updated
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git push --force origin temp:flamingo_updated
