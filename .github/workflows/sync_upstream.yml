@@ -23,6 +23,14 @@ env:
 on:
   schedule:
     - cron: '15 * * * *'
+  push:
+    branches:
+      - "repo/sync"
+  pull_request:
+    branches:
+      - "main" 
+    paths:
+      - ".github/workflows/sync_upstream.yaml"
 
   # Allows manual workflow run (must in default branch to work)
   workflow_dispatch:
