@@ -1,4 +1,6 @@
 name: Sync Upstream
+# Keeps dev and master in sync with the meshtastic upstream
+# Applies the Flamingo patch (specified by hash)
 
 env:
   # Required, URL to upstream (fork base)
