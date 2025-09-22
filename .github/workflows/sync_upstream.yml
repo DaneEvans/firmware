@@ -78,14 +78,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create temp branch
-        run: git checkout -b temp
-
-      - name: debug
-        run: git remote -v
-
-      - name: Cherry-pick commit
-        run: git merge flamingo_patch
+      - name: Try and merge flamingo_patch
+        run: |
+          git checkout -b temp
+          git remote -v 
+          git merge origin/flamingo_patch
 
       - name: Force push temp branch to flamingo_updated
         env:
